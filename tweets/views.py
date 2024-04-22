@@ -4,5 +4,5 @@ from django.views.generic import TemplateView
 
 
 class HomeView(LoginRequiredMixin, TemplateView):
-    template_name = "tweets/home.html"
+    template_name = "home.html"
     login_url = "/admin/"
