@@ -1,14 +1,14 @@
 from django.contrib.auth import SESSION_KEY, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.test import TestCase
-from django.urls import reverse_lazy
+from django.urls import reverse
 
 User = get_user_model()
 
 
 class TestSignupView(TestCase, UserCreationForm):
     def setUp(self):
-        self.url = reverse_lazy("accounts:signup")
+        self.url = reverse("accounts:signup")
 
     def test_success_get(self):
         response = self.client.get(self.url)
@@ -19,16 +19,12 @@ class TestSignupView(TestCase, UserCreationForm):
         valid_data = {
             "username": "testuser",
             "email": "test@test.com",
-            "password1": "testpassword",
-            "password2": "testpassword",
+            "password1": "testpassword2354",
+            "password2": "testpassword2354",
         }
-        response = self.client.post("accounts:signup", valid_data, follow=True)
+        response = self.client.post(reverse("accounts:signup"), valid_data, follow=True)
         self.assertRedirects(
-            response,
-            reverse_lazy("tweets:home"),
-            status_code=302,
-            target_status_code=200,
-            fetch_redirect_response=True
+            response, reverse("tweets:home"), status_code=302, target_status_code=200, fetch_redirect_response=True
         )
         self.assertTrue(User.objects.filter(username=valid_data["username"]).exists())
         self.assertIn(SESSION_KEY, self.client.session)

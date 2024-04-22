@@ -28,7 +28,7 @@ class TestSignupView(TestCase, UserCreationForm):
             reverse_lazy("tweets:home"),
             status_code=302,
             target_status_code=200,
-            fetch_redirect_response=True
+            fetch_redirect_response=True,
         )
         self.assertTrue(User.objects.filter(username=valid_data["username"]).exists())
         self.assertIn(SESSION_KEY, self.client.session)
