@@ -22,7 +22,7 @@ class TestSignupView(TestCase, UserCreationForm):
             "password1": "testpassword2354",
             "password2": "testpassword2354",
         }
-        response = self.client.post(reverse("accounts:signup"), valid_data, follow=True)
+        response = self.client.post(self.url, valid_data, follow=True)
         self.assertRedirects(
             response, reverse("tweets:home"), status_code=302, target_status_code=200, fetch_redirect_response=True
         )
@@ -32,9 +32,9 @@ class TestSignupView(TestCase, UserCreationForm):
     def test_failure_post_with_empty_form(self):
         invalid_data = {
             "username": "",
-            "email": "test@test.com",
-            "password1": "testpassword",
-            "password2": "testpassword",
+            "email": "",
+            "password1": "",
+            "password2": "",
         }
         response = self.client.post(self.url, invalid_data)
         form = response.context["form"]
