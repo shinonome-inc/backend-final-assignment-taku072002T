@@ -1,4 +1,7 @@
 {% block title %}Home{% endblock %}
+{% block nav%}
+<li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+{% endblock %}
 
 {% block content %}
 <h1>This is the home!</h1>

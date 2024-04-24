@@ -24,6 +24,9 @@
       <ul>
         <li><a href="{% url 'welcome:welcome' %}">Twitter Clone</a></li>
         <li><a href="{% url 'accounts:signup' %}">SignUp</a></li>
+        <li><a href="{% url 'accounts:login' %}">Login</a></li>
+        {% block nav %}
+        {% endblock %}
       </ul>
     </nav>
   </header>

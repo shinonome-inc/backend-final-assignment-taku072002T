@@ -23,8 +23,7 @@ class SignupView(CreateView):
 
 class LoginView(CreateView):
     form_class = LoginForm
-    template_name = "accounts/login.html"
-    success_url = reverse_lazy("tweets:home")
+    template_name = "registration/login.html"
 
     def form_valid(self, form):
         response = super().form_valid(form)
