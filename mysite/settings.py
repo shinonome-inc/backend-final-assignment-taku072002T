@@ -127,3 +127,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # New contributing
 AUTH_USER_MODEL = "accounts.User"
+
+LOGIN_REDIRECT_URL = "/"
