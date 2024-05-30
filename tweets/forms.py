@@ -6,4 +6,4 @@ from .models import Tweet
 class TweetCreationForm(forms.ModelForm):
     class Meta:
         model = Tweet
-        fields = ('title', 'content')
+        fields = ("title", "content")
