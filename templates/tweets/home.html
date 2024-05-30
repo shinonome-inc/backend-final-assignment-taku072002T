@@ -1,6 +1,13 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<li><a href="{% url 'tweets:create' %}">Post</a></li>
 <h1>This is the home!</h1>
+{% for tweet in tweets_list %}
+<p>
+    {{ tweet.title }}
+    {{ tweet.content}}
+</p>
+{% endfor %}
 <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
 {% endblock %}

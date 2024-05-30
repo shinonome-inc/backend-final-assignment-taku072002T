@@ -1,6 +1,17 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
+from django.shortcuts import render
+from django.views.generic import CreateView, ListView, TemplateView
+
+from .forms import TweetCreationForm
+from .models import Tweet
 
 
-class HomeView(LoginRequiredMixin, TemplateView):
-    template_name = "tweets/home.html"
+def HomeView(request):
+    tweets_list = Tweet.objects.all()
+    return render(request, 'tweets/home.html', {'tweets_list': tweets_list})
+
+
+class TweetCreationView(CreateView):
+    template_name = 'tweets/post.html'
+    form_class = TweetCreationForm
+    success_url = '/tweets/home'
