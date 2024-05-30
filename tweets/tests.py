@@ -97,7 +97,7 @@ class TestTweetDeleteView(TestCase):
         response = self.client.post(self.url)
         expected_url = reverse("tweets:home")
         self.assertRedirects(response, expected_url, status_code=302, target_status_code=200)
-        self.assertEqual(Tweet.objects.count(), 0)
+        self.assertFalse(Tweet.objects.filter(id=self.tweet.id).exists())
 
     def test_failure_post_with_not_exist_tweet(self):
         response = self.client.post(self.wrongurl)
