@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.views.generic import CreateView
 
 from .forms import TweetCreationForm
-from .models import Tweet, User
+from .models import Tweet
 
 
 def HomeView(request):
