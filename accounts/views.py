@@ -9,7 +9,7 @@ from django.views.generic import CreateView
 from tweets.models import Tweet
 
 from .forms import LoginForm, SignupForm
-from .models import Connection, User
+from .models import User
 
 
 class SignupView(CreateView):
