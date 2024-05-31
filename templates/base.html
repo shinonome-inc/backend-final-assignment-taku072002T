@@ -8,7 +8,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>{% block title %}Twitter Clone{% endblock %}</title>
+  <title>{% block title %}{% endblock %}</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="">
@@ -22,10 +22,17 @@
   <header class="mb-3">
     <nav>
       <ul>
+        {% if not user.is_authenticated %}
         <li><a href="{% url 'welcome:welcome' %}">Twitter Clone</a></li>
         <li><a href="{% url 'accounts:signup' %}">SignUp</a></li>
         <li><a href="{% url 'accounts:login' %}">Login</a></li>
+        {% else %}
+        Your Name is ... {{ request.user.username }}
+        <li><a href="{% url 'tweets:home' %}">Home</a></li>
+        <li><a href="{% url 'accounts:user_profile' user.username %}">Profile</a></li>
+        <li><a href="{% url 'tweets:create' %}">Post</a></li>
         <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+        {% endif %}
       </ul>
     </nav>
   </header>

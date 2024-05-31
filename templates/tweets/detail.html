@@ -1,13 +1,13 @@
-{% block title %}PostDetail{% endblock %}
+{% extends "base.html" %}
+{% block title %}
+PostDetail
+{% endblock %}
 
 {% block content %}
-<li><a href="{% url 'tweets:home' %}">Home</a></li>
-<li><a href="{% url 'tweets:yourprofile' %}">Profile</a></li>
-<li><a href="{% url 'tweets:create' %}">Post</a></li>
-<h1>This is the home!</h1>
+<h1>This is Tweet's Detail!</h1>
 {% for tweet in tweets %}
 <p>
-    {{ tweet.user }}<br>
+    <li><a href="{% url 'accounts:user_profile' tweet.user.username %}">{{tweet.user}}</a></li>
     {{ tweet.title }}<br>
     {{ tweet.content}}<br>
 </p>

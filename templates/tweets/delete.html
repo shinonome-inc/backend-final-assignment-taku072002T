@@ -1,9 +1,9 @@
-{% block title %}PostDelete{% endblock %}
+{% extends "base.html" %}
+{% block title %}
+PostDelete
+{% endblock %}
 
 {% block content %}
-<li><a href="{% url 'tweets:home' %}">Home</a></li>
-<li><a href="{% url 'tweets:yourprofile' %}">Profile</a></li>
-<li><a href="{% url 'tweets:create' %}">Post</a></li>
 <h1>This is the home!</h1>
 {% for tweet in tweets %}
 <p>

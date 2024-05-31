@@ -11,17 +11,6 @@ def HomeView(request):
     return render(request, "tweets/home.html", {"tweets_list": tweets_list})
 
 
-def UserProfileView(request, name):
-    tweets_list = Tweet.objects.filter(user=User.objects.get(username=name))
-    return render(request, "tweets/profile.html", {"tweets_list": tweets_list})
-
-
-def UserYourProfileView(request):
-    tweets_list = Tweet.objects.filter(user=request.user)
-
-    return render(request, "tweets/profile.html", {"tweets_list": tweets_list})
-
-
 def TweetDetailView(request, pk):
     tweets = Tweet.objects.filter(id=pk)
     return render(request, "tweets/detail.html", {"tweets": tweets})
