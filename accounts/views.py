@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
-from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from .forms import LoginForm, SignupForm
@@ -30,4 +29,4 @@ class LoginView(BaseLoginView):
 
 
 class LogoutView(BaseLogoutView):
-    success_url = reverse_lazy("/")
+    success_url = settings.LOGOUT_REDIRECT_URL

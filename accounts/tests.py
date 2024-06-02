@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import SESSION_KEY, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.test import TestCase
@@ -228,7 +229,7 @@ class TestLogoutView(TestCase):
     def test_success_post(self):
         response = self.client.post(self.logout)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("welcome:welcome"), status_code=302, target_status_code=200)
+        self.assertRedirects(response, settings.LOGOUT_REDIRECT_URL, status_code=302, target_status_code=200)
         self.assertNotIn(SESSION_KEY, self.client.session)
 
 
