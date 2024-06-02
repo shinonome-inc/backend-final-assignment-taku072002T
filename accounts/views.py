@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView
 
 from .forms import LoginForm, SignupForm
 
@@ -30,3 +30,13 @@ class LoginView(BaseLoginView):
 
 class LogoutView(BaseLogoutView):
     success_url = settings.LOGOUT_REDIRECT_URL
+
+
+class UserProfileView(TemplateView):
+    template_name = "accounts/profile.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["username"] = self.kwargs["username"]
+        return context
