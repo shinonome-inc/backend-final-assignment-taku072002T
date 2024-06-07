@@ -20,13 +20,11 @@ class TestSignupView(TestCase, UserCreationForm):
         valid_data = {
             "username": "testuser",
             "email": "test@test.com",
-            "password1": "testpassword2354",
-            "password2": "testpassword2354",
+            "password1": "testpassrd2354",
+            "password2": "testpassrd2354",
         }
         response = self.client.post(self.url, valid_data, follow=True)
-        self.assertRedirects(
-            response, reverse("tweets:home"), status_code=302, target_status_code=200, fetch_redirect_response=True
-        )
+        self.assertRedirects(response, settings.LOGIN_REDIRECT_URL, status_code=302)
         self.assertTrue(User.objects.filter(username=valid_data["username"]).exists())
         self.assertIn(SESSION_KEY, self.client.session)
 
