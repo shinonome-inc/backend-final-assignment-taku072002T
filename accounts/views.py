@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
@@ -12,11 +13,13 @@ from .models import User
 
 
 class SignupView(CreateView):
+
     form_class = SignupForm
     template_name = "accounts/signup.html"
-    success_url = reverse_lazy("tweets:home")
+    success_url = settings.LOGIN_REDIRECT_URL
 
     def form_valid(self, form):
+
         response = super().form_valid(form)
         username = form.cleaned_data["username"]
         password = form.cleaned_data["password1"]
@@ -36,4 +39,5 @@ class LoginView(BaseLoginView):
 
 
 class LogoutView(BaseLogoutView):
-    success_url = reverse_lazy("/")
+    success_url = settings.LOGOUT_REDIRECT_URL
+
