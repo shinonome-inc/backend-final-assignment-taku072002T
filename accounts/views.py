@@ -3,7 +3,6 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.shortcuts import render
-from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from tweets.models import Tweet
@@ -40,4 +39,3 @@ class LoginView(BaseLoginView):
 
 class LogoutView(BaseLogoutView):
     success_url = settings.LOGOUT_REDIRECT_URL
-
