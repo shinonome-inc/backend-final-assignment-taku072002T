@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.test import TestCase
 from django.urls import reverse
 
+from tweets.models import Tweet
+
 User = get_user_model()
 
 
@@ -232,8 +234,22 @@ class TestLogoutView(TestCase):
         self.assertNotIn(SESSION_KEY, self.client.session)
 
 
-# class TestUserProfileView(TestCase):
-#     def test_success_get(self):
+class TestUserProfileView(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username="testesuser",
+        )
+        self.user.set_password("testpassword")
+        self.user.save()
+        self.tweet = Tweet.objects.create(user=self.user, title="test_title", content="test_content")
+        self.url = reverse("accounts:user_profile", kwargs={"username": self.user.username})
+
+    def test_success_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(list(response.context["tweets_list"]), list(Tweet.objects.all()))
+        self.assertTemplateUsed(response, "tweets/profile.html")
 
 
 # class TestUserProfileEditView(TestCase):

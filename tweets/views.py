@@ -8,7 +8,8 @@ from .models import Tweet
 
 def HomeView(request):
     tweets_list = Tweet.objects.all()
-    return render(request, "tweets/home.html", {"tweets_list": tweets_list})
+    context = {"tweets_list": tweets_list}
+    return render(request, "tweets/home.html", context)
 
 
 def TweetDetailView(request, pk):

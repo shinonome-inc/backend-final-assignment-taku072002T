@@ -14,6 +14,7 @@ class TestHomeView(TestCase):
             username="test_user",
             password="test_password",
         )
+        self.tweet = Tweet.objects.create(user=self.user, title="test_title", content="test_content")
 
     def test_success_get(self):
         self.client.force_login(self.user)
