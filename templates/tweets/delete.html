@@ -10,8 +10,7 @@ PostDelete
     {{ tweet.user }}<br>
     {{ tweet.title }}<br>
     {{ tweet.content}}<br>
-<h1>Tweet will be deleted</h1>
-<a href="/tweets/{{tweet.id}}/delete">delete</a>
+<h1>Tweet was deleted</h1>
 <a href="{% url 'tweets:home' %}">Home</a>
 </p>
 {% endfor %}

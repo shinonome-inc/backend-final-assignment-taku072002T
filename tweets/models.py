@@ -3,6 +3,7 @@ import uuid
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -13,3 +14,4 @@ class Tweet(models.Model):
     title = models.CharField(max_length=50)
 
     content = models.CharField(max_length=100)
+    created_at = models.DateTimeField(default=timezone.now)

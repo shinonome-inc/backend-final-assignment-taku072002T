@@ -10,6 +10,7 @@ PostDetail
     <li><a href="{% url 'accounts:user_profile' tweet.user.username %}">{{tweet.user}}</a></li>
     {{ tweet.title }}<br>
     {{ tweet.content}}<br>
+    {{ tweet.created_at }}
 </p>
 {% endfor %}
 <li><a href="{% url 'accounts:logout' %}">Logout</a></li>

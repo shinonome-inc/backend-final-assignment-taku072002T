@@ -1,28 +1,29 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import redirect, render
+from django.utils import timezone
 from django.views.generic import CreateView
 
 from .forms import TweetCreationForm
 from .models import Tweet
 
 
-def HomeView(request):
-    tweets_list = Tweet.objects.all()
+@login_required
+def Home_View(request):
+    tweets_list = Tweet.objects.select_related("user").all()
     context = {"tweets_list": tweets_list}
     return render(request, "tweets/home.html", context)
 
 
-def TweetDetailView(request, pk):
+@login_required
+def TweetDetail_View(request, pk):
     tweets = Tweet.objects.filter(id=pk)
     return render(request, "tweets/detail.html", {"tweets": tweets})
 
 
-def TweetDeletesView(request, pk):
-    tweets = Tweet.objects.filter(id=pk)
-    return render(request, "tweets/delete.html", {"tweets": tweets})
-
-
-def TweetDeleteView(request, pk):
+@login_required
+def TweetDelete_View(request, pk):
     tweets = Tweet.objects.filter(id=pk)
     if tweets.count() == 0:
         return HttpResponseNotFound()
@@ -32,11 +33,12 @@ def TweetDeleteView(request, pk):
     return redirect("tweets:home")
 
 
-class TweetCreationView(CreateView):
+class TweetCreateView(LoginRequiredMixin, CreateView):
     template_name = "tweets/post.html"
     form_class = TweetCreationForm
     success_url = "/tweets/home/"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        form.instance.created_at = timezone.now()
         return super().form_valid(form)

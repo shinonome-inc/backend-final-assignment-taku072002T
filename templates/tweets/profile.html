@@ -10,9 +10,10 @@ UserProfile
     {{ tweet.user }}<br>
     {{ tweet.title }}<br>
     {{ tweet.content}}<br>
+    {{ tweet.created_at}}
     <a href="/tweets/{{tweet.id}}">Detail</a>
     {% if tweet.user == request.user %}
-    <a href="/tweets/{{tweet.id}}/deletes">delete</a>
+    <a href="/tweets/{{tweet.id}}/delete">delete</a>
     {% endif %}
 </p>
 {% endfor %}

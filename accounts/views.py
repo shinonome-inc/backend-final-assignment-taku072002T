@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.shortcuts import render
@@ -27,7 +28,8 @@ class SignupView(CreateView):
         return response
 
 
-def UserProfileView(request, username):
+@login_required
+def UserProfile_View(request, username):
     tweets_list = Tweet.objects.filter(user=User.objects.get(username=username))
     return render(request, "tweets/profile.html", {"username": username, "tweets_list": tweets_list})
 

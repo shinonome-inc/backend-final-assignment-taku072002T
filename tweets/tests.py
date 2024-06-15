@@ -89,12 +89,13 @@ class TestTweetDeleteView(TestCase):
         )
         self.client.force_login(self.user)
         self.tweet = Tweet.objects.create(user=self.user, title="test_title", content="test_content")
-        self.tweet2 = Tweet.objects.create(user=self.user2, title="testtt_title", content="testtt_content")
+        self.tweet2 = Tweet.objects.create(user=self.user2, title="test_title2", content="test_content2")
         self.url = "/tweets/" + str(self.tweet.id) + "/delete/"
         self.othersurl = "/tweets/" + str(self.tweet2.id) + "/delete/"
         self.wrongurl = "/tweets/" + str("48956984-1c8b-6e38-2d6a-548a6b1c50f0") + "/delete/"
 
     def test_success_post(self):
+        self.client.force_login(self.user)
         response = self.client.post(self.url)
         expected_url = reverse("tweets:home")
         self.assertRedirects(response, expected_url, status_code=302, target_status_code=200)

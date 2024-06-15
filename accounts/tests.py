@@ -238,16 +238,20 @@ class TestUserProfileView(TestCase):
         self.user = User.objects.create(
             username="testesuser",
         )
+        self.user2 = User.objects.create(username="testesuser2")
         self.user.set_password("testpassword")
+        self.user.set_password("testpassword2")
         self.user.save()
+        self.user2.save()
         self.tweet = Tweet.objects.create(user=self.user, title="test_title", content="test_content")
+        self.tweet2 = Tweet.objects.create(user=self.user2, title="test_title2", content="test_content2")
         self.url = reverse("accounts:user_profile", kwargs={"username": self.user.username})
 
     def test_success_get(self):
-        self.client.force_login(self.user)
+        self.client.force_login(self.user2)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(list(response.context["tweets_list"]), list(Tweet.objects.all()))
+        self.assertEqual(response.context["tweets_list"][0], Tweet.objects.get(user=self.user))
         self.assertTemplateUsed(response, "tweets/profile.html")
 
 
