@@ -136,7 +136,10 @@ class TestSignupView(TestCase, UserCreationForm):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(username=invalid_data["username"]).exists())
         self.assertFalse(form.is_valid())
-        self.assertIn("このパスワードは短すぎます。最低 8 文字以上必要です。", form.errors["password2"])
+        self.assertIn(
+            "このパスワードは短すぎます。最低 8 文字以上必要です。",
+            form.errors["password2"],
+        )
 
     def test_failure_post_with_password_similar_to_username(self):
         invalid_data = {
@@ -229,7 +232,12 @@ class TestLogoutView(TestCase):
     def test_success_post(self):
         response = self.client.post(self.logout)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("welcome:welcome"), status_code=302, target_status_code=200)
+        self.assertRedirects(
+            response,
+            reverse("welcome:welcome"),
+            status_code=302,
+            target_status_code=200,
+        )
         self.assertNotIn(SESSION_KEY, self.client.session)
 
 

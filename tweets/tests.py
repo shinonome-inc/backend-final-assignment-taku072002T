@@ -59,7 +59,10 @@ class TestTweetCreateView(TestCase):
         response = self.client.post(self.url, data={"title": "test_title", "content": "test_content" * 100})
         self.assertEqual(response.status_code, 200)
         form = response.context["form"]
-        self.assertIn("この値は 100 文字以下でなければなりません( 1200 文字になっています)。", form.errors["content"])
+        self.assertIn(
+            "この値は 100 文字以下でなければなりません( 1200 文字になっています)。",
+            form.errors["content"],
+        )
 
 
 class TestTweetDetailView(TestCase):

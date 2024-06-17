@@ -29,9 +29,13 @@ class SignupView(CreateView):
 
 
 @login_required
-def UserProfile_View(request, username):
-    tweets_list = Tweet.objects.filter(user=User.objects.get(username=username))
-    return render(request, "tweets/profile.html", {"username": username, "tweets_list": tweets_list})
+def userprofile_view(request, username):
+    tweets_list = Tweet.objects.select_related("user").filter(user=User.objects.get(username=username))
+    return render(
+        request,
+        "tweets/profile.html",
+        {"username": username, "tweets_list": tweets_list},
+    )
 
 
 class LoginView(BaseLoginView):

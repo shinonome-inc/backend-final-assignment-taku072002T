@@ -10,20 +10,20 @@ from .models import Tweet
 
 
 @login_required
-def Home_View(request):
+def home_view(request):
     tweets_list = Tweet.objects.select_related("user").all()
     context = {"tweets_list": tweets_list}
     return render(request, "tweets/home.html", context)
 
 
 @login_required
-def TweetDetail_View(request, pk):
+def tweetdetail_view(request, pk):
     tweets = Tweet.objects.filter(id=pk)
     return render(request, "tweets/detail.html", {"tweets": tweets})
 
 
 @login_required
-def TweetDelete_View(request, pk):
+def tweetdelete_view(request, pk):
     tweets = Tweet.objects.filter(id=pk)
     if tweets.count() == 0:
         return HttpResponseNotFound()
