@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView
 
@@ -36,7 +37,7 @@ def tweetdelete_view(request, pk):
 class TweetCreateView(LoginRequiredMixin, CreateView):
     template_name = "tweets/post.html"
     form_class = TweetCreationForm
-    success_url = "/tweets/home/"
+    success_url = reverse_lazy("tweets:home")
 
     def form_valid(self, form):
         form.instance.user = self.request.user

@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from django.urls import reverse
+from django.urls import reverse_lazy
 
 from .models import Tweet
 
@@ -9,7 +9,7 @@ User = get_user_model()
 
 class TestHomeView(TestCase):
     def setUp(self):
-        self.url = reverse("tweets:home")
+        self.url = reverse_lazy("tweets:home")
         self.user = User.objects.create(
             username="test_user",
             password="test_password",
@@ -26,7 +26,7 @@ class TestHomeView(TestCase):
 
 class TestTweetCreateView(TestCase):
     def setUp(self):
-        self.url = reverse("tweets:create")
+        self.url = reverse_lazy("tweets:create")
         self.user = User.objects.create(
             username="testesuser",
         )
@@ -43,7 +43,7 @@ class TestTweetCreateView(TestCase):
     def test_success_post(self):
         self.client.force_login(self.user)
         response = self.client.post(self.url, {"title": "test_title", "content": "test_content"})
-        expected_url = reverse("tweets:home")
+        expected_url = reverse_lazy("tweets:home")
         self.assertRedirects(response, expected_url, status_code=302, target_status_code=200)
         self.assertEqual(Tweet.objects.count(), 1)
         self.assertEqual(Tweet.objects.first().content, "test_content")
@@ -72,7 +72,7 @@ class TestTweetDetailView(TestCase):
         )
         self.client.force_login(self.user)
         self.tweet = Tweet.objects.create(user=self.user, title="test_title", content="test_content")
-        self.url = "/tweets/" + str(self.tweet.id) + "/"
+        self.url = reverse_lazy("tweets:detail", kwargs={"pk": str(self.tweet.id)})
 
     def test_success_get(self):
 
@@ -93,14 +93,14 @@ class TestTweetDeleteView(TestCase):
         self.client.force_login(self.user)
         self.tweet = Tweet.objects.create(user=self.user, title="test_title", content="test_content")
         self.tweet2 = Tweet.objects.create(user=self.user2, title="test_title2", content="test_content2")
-        self.url = "/tweets/" + str(self.tweet.id) + "/delete/"
-        self.othersurl = "/tweets/" + str(self.tweet2.id) + "/delete/"
-        self.wrongurl = "/tweets/" + str("48956984-1c8b-6e38-2d6a-548a6b1c50f0") + "/delete/"
+        self.wrongid = "48956984-1c8b-6e38-2d6a-548a6b1c50f0"
+        self.url = reverse_lazy("tweets:delete", kwargs={"pk": str(self.tweet.id)})
+        self.othersurl = reverse_lazy("tweets:delete", kwargs={"pk": str(self.tweet2.id)})
+        self.wrongurl = reverse_lazy("tweets:delete", kwargs={"pk": self.wrongid})
 
     def test_success_post(self):
-        self.client.force_login(self.user)
         response = self.client.post(self.url)
-        expected_url = reverse("tweets:home")
+        expected_url = reverse_lazy("tweets:home")
         self.assertRedirects(response, expected_url, status_code=302, target_status_code=200)
         self.assertFalse(Tweet.objects.filter(id=self.tweet.id).exists())
 
