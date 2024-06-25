@@ -4,6 +4,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.test import TestCase
 from django.urls import reverse
 
+from tweets.models import Tweet
+
 User = get_user_model()
 
 
@@ -134,7 +136,10 @@ class TestSignupView(TestCase, UserCreationForm):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(username=invalid_data["username"]).exists())
         self.assertFalse(form.is_valid())
-        self.assertIn("このパスワードは短すぎます。最低 8 文字以上必要です。", form.errors["password2"])
+        self.assertIn(
+            "このパスワードは短すぎます。最低 8 文字以上必要です。",
+            form.errors["password2"],
+        )
 
     def test_failure_post_with_password_similar_to_username(self):
         invalid_data = {
@@ -227,12 +232,35 @@ class TestLogoutView(TestCase):
     def test_success_post(self):
         response = self.client.post(self.logout)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, settings.LOGOUT_REDIRECT_URL, status_code=302, target_status_code=200)
+        self.assertRedirects(
+            response,
+            reverse("welcome:welcome"),
+            status_code=302,
+            target_status_code=200,
+        )
         self.assertNotIn(SESSION_KEY, self.client.session)
 
 
-# class TestUserProfileView(TestCase):
-#     def test_success_get(self):
+class TestUserProfileView(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username="testesuser",
+        )
+        self.user2 = User.objects.create(username="testesuser2")
+        self.user.set_password("testpassword")
+        self.user.set_password("testpassword2")
+        self.user.save()
+        self.user2.save()
+        self.tweet = Tweet.objects.create(user=self.user, title="test_title", content="test_content")
+        self.tweet2 = Tweet.objects.create(user=self.user2, title="test_title2", content="test_content2")
+        self.url = reverse("accounts:user_profile", kwargs={"username": self.user.username})
+
+    def test_success_get(self):
+        self.client.force_login(self.user2)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["tweets_list"][0], Tweet.objects.get(user=self.user))
+        self.assertTemplateUsed(response, "tweets/profile.html")
 
 
 # class TestUserProfileEditView(TestCase):

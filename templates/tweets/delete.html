@@ -1,19 +1,18 @@
 {% extends "base.html" %}
 {% block title %}
-Home
+PostDelete
 {% endblock %}
 
-
 {% block content %}
-
 <h1>This is the home!</h1>
-{% for tweet in tweets_list %}
+{% for tweet in tweets %}
 <p>
     {{ tweet.user }}<br>
     {{ tweet.title }}<br>
     {{ tweet.content}}<br>
-    {{ tweet.created_at }}
-    <a href="/tweets/{{tweet.id}}">Detail</a>
+<h1>Tweet was deleted</h1>
+<a href="{% url 'tweets:home' %}">Home</a>
 </p>
 {% endfor %}
+<li><a href="{% url 'accounts:logout' %}">Logout</a></li>
 {% endblock %}
