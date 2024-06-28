@@ -3,13 +3,15 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
-from django.shortcuts import render
+from django.http import HttpResponseNotFound
+from django.shortcuts import redirect, render
 from django.views.generic import CreateView
+from django.http import HttpResponseBadRequest
 
 from tweets.models import Tweet
 
 from .forms import LoginForm, SignupForm
-from .models import User
+from .models import Connection, User
 
 
 class SignupView(CreateView):
@@ -36,6 +38,39 @@ def userprofile_view(request, username):
         "tweets/profile.html",
         {"username": username, "tweets_list": tweets_list},
     )
+
+
+@login_required
+def follow_view(request, username):
+    try:
+        follower = User.objects.get(username=request.user.username)
+        following = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return HttpResponseNotFound("User does not exist")
+    if follower == following:
+        return HttpResponseBadRequest("You cannot follow yourself")
+    else:
+        created = Connection.objects.create(follower=follower, following=following)
+        if created:
+            return redirect("tweets:home")
+        else:
+            return HttpResponseBadRequest("You are already following this user")
+
+
+@login_required
+def unfollow_view(request, username):
+    try:
+        follower = User.objects.get(username=request.user.username)
+        following = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return HttpResponseNotFound("User does not exist")
+    except Connection.DoesNotExist:
+        return HttpResponseNotFound("You are not following this user")
+    if follower == following:
+        return HttpResponseBadRequest("You cannot unfollow yourself")
+    else:
+        Connection.objects.filter(follower=follower, following=following).delete()
+        return redirect("tweets:home")
 
 
 class LoginView(BaseLoginView):

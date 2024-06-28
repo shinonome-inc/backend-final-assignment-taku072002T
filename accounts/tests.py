@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from tweets.models import Tweet
+from accounts.models import Connection
 
 User = get_user_model()
 
@@ -273,17 +274,36 @@ class TestUserProfileView(TestCase):
 #     def test_failure_post_with_incorrect_user(self):
 
 
-# class TestFollowView(TestCase):
-#     def test_success_post(self):
+class TestFollowView(TestCase):
+    def setUp(self):
+        self.user=User.objects.create(username="testuser", password="testpassword")
+        self.user2=User.objects.create(username="testuser2", password="testpassword2")
+        self.url=reverse("accounts:follow", kwargs={"username": self.user2.username})
+    def test_success_post(self):
+        self.client.force_login(self.user)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("tweets:home"), status_code=302, target_status_code=200)
+        self.assertTrue(Connection.objects.filter(follower=self.user, following=self.user2).exists())
 
-#     def test_failure_post_with_not_exist_user(self):
+    def test_failure_post_with_not_exist_user(self):
+        self.client.force_login(self.user)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 404)
 
-#     def test_failure_post_with_self(self):
+    def test_failure_post_with_self(self):
+        self.client.force_login(self.user)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 400)
 
 
-# class TestUnfollowView(TestCase):
-#     def test_success_post(self):
-
+class TestUnfollowView(TestCase):
+    def setUp(self):
+        self.user=User.objects.create(username="testuser", password="testpassword")
+        self.user2=User.objects.create(username="testuser2", password="testpassword2")
+        self.url=reverse("accounts:follow", kwargs={"username": self.user2.username})
+    def test_success_post(self):
+        
 #     def test_failure_post_with_not_exist_tweet(self):
 
 #     def test_failure_post_with_incorrect_user(self):
