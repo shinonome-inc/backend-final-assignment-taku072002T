@@ -3,10 +3,9 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect, render
-from django.views.generic import CreateView
-from django.http import HttpResponseBadRequest
+from django.views.generic import CreateView, ListView
 
 from tweets.models import Tweet
 
@@ -30,13 +29,47 @@ class SignupView(CreateView):
         return response
 
 
+class FollowingListView(ListView):
+    model = Connection
+    template_name = "accounts/following_list.html"
+    context_object_name = "following_list"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context = {
+            "following_list": Connection.objects.filter(
+                follower=User.objects.prefetch_related("following").get(username=self.kwargs["username"])
+            ),
+            "username": self.kwargs["username"],
+        }
+        return context
+
+
+class FollowerListView(ListView):
+    model = Connection
+    template_name = "accounts/follower_list.html"
+    context_object_name = "follower_list"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context = {
+            "follower_list": Connection.objects.filter(
+                following=User.objects.prefetch_related("follower").get(username=self.kwargs["username"])
+            ),
+            "username": self.kwargs["username"],
+        }
+        return context
+
+
 @login_required
 def userprofile_view(request, username):
     tweets_list = Tweet.objects.select_related("user").filter(user=User.objects.get(username=username))
+    n_follower = Connection.objects.filter(following=User.objects.get(username=username)).all().count()
+    n_following = Connection.objects.filter(follower=User.objects.get(username=username)).all().count()
     return render(
         request,
         "tweets/profile.html",
-        {"username": username, "tweets_list": tweets_list},
+        {"username": username, "tweets_list": tweets_list, "n_follower": n_follower, "n_following": n_following},
     )
 
 
@@ -64,8 +97,6 @@ def unfollow_view(request, username):
         following = User.objects.get(username=username)
     except User.DoesNotExist:
         return HttpResponseNotFound("User does not exist")
-    except Connection.DoesNotExist:
-        return HttpResponseNotFound("You are not following this user")
     if follower == following:
         return HttpResponseBadRequest("You cannot unfollow yourself")
     else:
