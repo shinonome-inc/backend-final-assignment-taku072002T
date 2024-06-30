@@ -260,8 +260,8 @@ class TestUserProfileView(TestCase):
         self.client.force_login(self.user2)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["n_follower"], Connection.objects.filter(follower=self.user).count())
-        self.assertEqual(response.context["n_following"], Connection.objects.filter(following=self.user).count())
+        self.assertEqual(response.context["n_follower"], Connection.objects.filter(following=self.user).count())
+        self.assertEqual(response.context["n_following"], Connection.objects.filter(follower=self.user).count())
         self.assertEqual(response.context["tweets_list"][0], Tweet.objects.get(user=self.user))
         self.assertTemplateUsed(response, "tweets/profile.html")
 

@@ -15,3 +15,10 @@ class Tweet(models.Model):
 
     content = models.CharField(max_length=100)
     created_at = models.DateTimeField(default=timezone.now)
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user", default="")
+    tweet = models.ForeignKey(Tweet, related_name="tweet", on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(default=timezone.now)
